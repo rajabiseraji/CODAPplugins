@@ -1,0 +1,93 @@
+<!--
+
+==========================================================================
+traffic1d.html
+
+HTML for the Traffic 1D DSG.
+
+Author:   Tim Erickson
+
+Copyright (c) 2015 by The Concord Consortium, Inc. All rights reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+==========================================================================
+-->
+
+<!--
+    Here is the URL...
+
+    http://codap.concord.org/releases/latest/static/dg/en/cert/index.html?di=http://www.eeps.com/dsg/traffic1d/traffic1d.html
+
+    or locally,
+
+    http://codap.concord.org/releases/latest/static/dg/en/cert/index.html?di=http://localhost/~tim/gamePrototypes/traffic1d/traffic1d.html
+
+ -->
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel='stylesheet' type='text/css' href='traffic1d.css'/>
+
+
+    <!--These two scripts take care of the communication with CODAP-->
+    <script src="../common/iframe-phone.js" language="javascript"></script>
+    <script src="extras/codap_helper.js" language="javascript"></script>
+
+    <!-- This script is our game source -->
+    <script src="Car.js" language="JavaScript"></script>
+    <script src="Light.js" language="JavaScript"></script>
+    <script src="trafficManager.js" language="JavaScript"></script>
+    <script src="trafficModel.js" language="JavaScript"></script>
+    <script src="roadView.js" language="JavaScript"></script>
+
+    <title>Traffic Lights</title>
+</head>
+
+<body>
+<svg id = "road" width=800 height=66>
+    <rect height="100%" width="100%" fill="gray"/>
+    <line x1="0" x2="800" y1="2" y2="2" stroke="white"/>
+    <line x1="0" x2="800" y1="64" y2="64" stroke="white"/>
+    <line x1="0" x2="800" y1="31" y2="33" stroke="yellow"/>
+    <line x1="0" x2="800" y1="33" y2="33" stroke="yellow"/>
+</svg>
+
+
+<div class="hBox">
+    <button id="startStop" onclick="trafficManager.startStop()">go</button>
+    <button id="addCar" onclick="trafficManager.addCar()">add car</button>
+    <!--<button id="update" onclick="trafficManager.update(1)">step</button>-->
+    <div class = "textIO" id = "time" style = "width: 50px">0.0</div>
+    <div class = "textIO" id = "singleCarDisplay" style="width:200px">car info</div>
+    <div class = "textIO" id = "singleLightDisplay">
+        <div id="lightForm" name="lightForm" onsubmit="trafficManager.changeLightProperties()">
+            <span id="lightIntroText">Light at ###</span>
+            Green starts: <input type="text" id="phaseText" value="0" size="6">
+            Cycle length: <input type="text" id="periodText" value="0" size="6">
+            <button id="lightChangeSubmitButton"
+                    onclick="trafficManager.changeLightProperties()"
+                   value="Save Light"
+                   >Save light data</button>
+        </div>
+    </div>
+    <button id="game" onclick="trafficManager.gameButtonPressed()">new game</button>
+</div>
+
+<script>
+    trafficManager.initializeComponent();
+</script>
+
+</body>
+</html>

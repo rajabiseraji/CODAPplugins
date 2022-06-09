@@ -1,0 +1,179 @@
+<!--
+==========================================================================
+
+ * Created by tim on 9/11/16.
+ 
+ 
+ ==========================================================================
+ chem101.html in gamePrototypes.
+
+HTML wrapper for ....
+
+    Author:   Tim Erickson
+
+Copyright (c) 2016 by The Concord Consortium, Inc. All rights reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+limitations under the License.
+==========================================================================
+
+-->
+
+<!--
+Here is the URL...
+
+http://codap.concord.org/releases/dsg?di=http://www.eeps.com/dsg/chem101/chem101.html
+
+
+local:
+http://codap.concord.org/releases/dsg?di=http://localhost/~tim/gamePrototypes/chem101/chem101.html
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Chem101
+    </title>
+
+    <!--        stylesheets         -->
+    <link rel='stylesheet' type='text/css' href='chem101.css'/>
+    <link rel='stylesheet' type='text/css'
+          href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/themes/base/jquery-ui.css'/>
+
+    <!-- These two scripts take care of the communication with CODAP and commons -->
+    <script src="../common/iframe-phone.js" language="javascript"></script>
+    <script src="../common/codap_helper_newAPI.js" language="javascript"></script>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+    <!-- Snap -->
+    <script src="../common/snap.svg.js"></script>
+
+    <script src="../common/TEEUtils.js" language="javascript"></script>
+
+    <!--            our game source         -->
+    <script src="../common/events.js" language="JavaScript"></script>
+    <script src="PourControl.js" language="JavaScript"></script>
+    <script src="ChemSetupView.js" language="JavaScript"></script>
+    <script src="Contents.js" language="JavaScript"></script>
+    <script src="equipment/Graduation.js" language="JavaScript"></script>
+    <script src="equipment/Beaker.js" language="JavaScript"></script>
+    <script src="ChemTransfer.js" language="JavaScript"></script>
+    <script src="DragConsequenceManager.js" language="JavaScript"></script>
+    <script src="chem/Reaction.js" language="JavaScript"></script>
+    <script src="chem/Chemistry.js" language="JavaScript"></script>
+    <script src="chem/reactionList.js" language="JavaScript"></script>
+    <script src="chem/chemicals.js" language="JavaScript"></script>
+
+
+    <script src="chem101.js" language="JavaScript"></script>
+    <script src="chem101.manager.js" language="JavaScript"></script>
+    <script src="chem101.connector.js" language="JavaScript"></script>
+
+    <script language="JavaScript">
+        /**
+         * Runs when everything is loaded.
+         */
+        $(function () {
+            $("#tabs").tabs();
+            startCodapConnection(); //  ends up calliing chem101.initialize() too
+        });
+    </script>
+
+</head>
+<body>
+
+<div id="tabs">
+
+    <!--    list the tabs for this jquery_ui widget -->
+    <ul>
+        <li><a href="#labTab">Lab</a></li>
+        <li><a href="#instructionsTab">What to do</a></li>
+        <li><a href="#debugTab">Debug</a></li>
+    </ul>
+
+    <!--    Now describe each tab separately, note how the list above references the IDs    -->
+
+    <!--        LAB     -->
+
+    <div id="labTab">
+
+        Add to beaker:
+        <select id="chemSourceSelector" onchange="chem101.manager.sourceChosen()">
+            <option value="H2O" selected>water (H2O)</option>
+            <option value="NaCl">salt (NaCl)</option>
+            <option value="KI">potassium iodide (KI)</option>
+            <option value="Pb_NO3_2">Lead nitrate (Pb(NO3)2)</option>
+            <option value="HCl_">acid (1M HCl)</option>
+            <option value="NaOH_">base (1M NaOH)</option>
+            <option value="Hin">phenolphthalein (1%)</option>
+        </select>
+
+        <br>
+
+        <svg id="theChemLabSetupView" width="300" height="200">
+            <!--<svg id="beakerLL" class="equipmentZone" width="50" height="200" x="0" y="0"></svg>-->
+            <svg id="beakerL" class="equipmentZone" width="50" height="200" x="50" y="0"></svg>
+            <svg id="beakerR" class="equipmentZone" width="100" height="200" x="100" y="0"></svg>
+            <svg id="beakerRR" class="equipmentZone" width="100" height="200" x="200" y="0"></svg>
+            <!--
+                <svg id="zone1" class="equipmentZone" width="100" height="100" x="200" y="0"></svg>
+                <svg id="zone2" class="equipmentZone" width="100" height="100" x="200" y="100"></svg>
+                <svg id="zone3" class="equipmentZone" width="100" height="100" x="200" y="200"></svg>
+            -->
+        </svg>
+        <br>
+
+        <div>
+            <span id="alterationLabel"></span><br>
+            <svg id="pour" height="24" width="120"></svg>
+            <button id="addSubstance_25" onclick="chem101.manager.moveOrAddSubstanceToAContainer(0.025)">25mL</button>
+            <button id="addSubstance_5" onclick="chem101.manager.moveOrAddSubstanceToAContainer(0.005)">5mL</button>
+            <button id="addSubstance_1" onclick="chem101.manager.moveOrAddSubstanceToAContainer(0.001)">1mL</button>
+            <button id="addSubstance_drop" onclick="chem101.manager.moveOrAddSubstanceToAContainer('drop')">drop
+            </button>
+        </div>
+        <button id="newSampleButton" onclick="chem101.manager.getNewSample()">new sample</button>
+        <p id="beakerContents"></p>
+    </div>
+
+
+    <!--        INSTRUCTIONS     -->
+
+
+    <div id="instructionsTab">
+        <ul>
+            <li>Click in a beaker to set it to receive new material.
+            <li>Choose what you want to add from the menu above.
+            <li>Drag from beaker to beaker to set them up for transfer.
+            <li>Click a button to move material in (or from beaker to beaker)
+            <li>Click the <img src="../art/emptyIcon.png" width="8" height="8"/> icon to empty a beaker.</li>
+        </ul>
+    </div>
+
+    <!--        DEBUG     -->
+
+    <div id="debugTab">
+        <div id="debugText"></div>
+    </div>
+
+
+</div>
+
+</body>
+
+</html>

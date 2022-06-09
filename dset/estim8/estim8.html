@@ -1,0 +1,89 @@
+<!--
+==========================================================================
+
+ * Created by tim on 1/18/17.
+ 
+ 
+ ==========================================================================
+ dset.html.html in gamePrototypes.
+
+HTML wrapper for ....
+
+    Author:   Tim Erickson
+
+Copyright (c) 2016 by The Concord Consortium, Inc. All rights reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+limitations under the License.
+==========================================================================
+
+-->
+
+<!--
+ LOCAL access. Edit to match your setup
+http://codap.concord.org/releases/dsg?di=http://localhost/~tim/gamePrototypes/dset/estim8/estim8.html
+
+sandoe:
+http://codap.concord.org/~jsandoe/build/static/dg/en/cert/index.html?di=http://localhost/~tim/gamePrototypes/dset/estim8/estim8.html
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Estim8</title>
+
+    <script src="/common/jquery.js" language="javascript"></script>
+    <script src="/common/snap.svg.js" language="javascript"></script>
+
+    <script src="/common/iframe-phone.js" language="JavaScript"></script>
+    <script src="/common/CodapInterface.js" language="JavaScript"></script>
+
+    <script src="/common/pluginHelper.js" language="JavaScript"></script>
+    <script src="estim8.js" language="JavaScript"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <script src="websocketHandler.js" type="module"></script>
+
+    <script>
+        /**
+         * Runs when everything is loaded.
+         */
+        $(function () {
+            startCodapConnection();
+        });
+    </script>
+
+</head>
+<body>
+<h1>Estimation Game</h1>
+<p>Enter your name: <input id="yourName" type="text"></p>
+<br>
+<svg id="estimationStrip" width="300" height="40">
+    <rect height="40" width="300" fill="dodgerblue"></rect>
+</svg>
+
+<div id="estimationControls">
+    Value: <input id="valueField" type="text">
+    <button id="newTurnButton" onclick="estim8.endTurn()">Submit estimate</button>
+</div>
+
+<button id="newGameButton" onclick="estim8.newGame()">New Game</button>
+
+<template id="cursor">
+    <svg viewBox="0 0 16.3 24.7" class="cursor">
+        <path stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" d="M15.6 15.6L.6.6v20.5l4.6-4.5 3.2 7.5 3.4-1.3-3-7.2z"/>
+    </svg>
+</template>
+
+</body>
+</html>

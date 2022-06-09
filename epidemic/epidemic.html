@@ -1,0 +1,139 @@
+<!--
+    Here is the URL...
+
+    http://codap.concord.org/releases/dsg?di=http://www.eeps.com/dsg/epidemic/epidemic.html
+
+    or locally,
+    http://codap.concord.org/releases/dsg?di=http://localhost/~tim/gamePrototypes/epidemic/epidemic.html
+
+
+ ==========================================================================
+ epidemic.html
+
+ Main page for the med DSG.
+
+ Author:   Tim Erickson
+
+ Copyright (c) 2015 by The Concord Consortium, Inc. All rights reserved.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ ==========================================================================
+
+
+    -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel='stylesheet' type='text/css' href='epidemic.css'/>
+
+    <!-- These two scripts take care of the communication with CODAP and commons -->
+    <script src="../common/iframe-phone.js" language="javascript"></script>
+    <script src="../common/codapInterface.js" language="javascript"></script>
+    <script src="../common/pluginHelper.js" language="javascript"></script>
+
+    <script src="../common/TEEUtils.js" language="javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+    <!-- Snap (local) -->
+    <script src="../common/snap.svg.js"></script>
+
+    <!-- Our game source -->
+    <script src="epidemic.js" language="JavaScript"></script>
+    <script src="epiManager.js" language="JavaScript"></script>
+    <script src="epiModel.js" language="JavaScript"></script>
+    <script src="epiWorldView.js" language="JavaScript"></script>
+    <script src="epiGeography.js" language="JavaScript"></script>
+    <script src="Location.js" language="JavaScript"></script>
+    <script src="Critter.js" language="JavaScript"></script>
+    <script src="CritterView.js" language="JavaScript"></script>
+    <script src="Motivation.js" language="JavaScript"></script>
+    <script src="nameGenerator.js" language="JavaScript"></script>
+    <script src="epiMalady.js" language="JavaScript"></script>
+    <script src="epiOptions.js" language="JavaScript"></script>
+    <script src="epidemicConnector.js" language="JavaScript"></script>
+
+
+    <title>Epidemic</title>
+</head>
+<body>
+
+<!--        Main big SVG. Called "epiWorldView"         -->
+
+<svg width="400" height="400" viewBox="0 0 1500 1500" id="epiWorldView">
+    <defs>
+        <linearGradient id="epiGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+            <stop offset="0%" style="stop-color : rgb(150, 150, 0);stop-opacity : 1"/>
+            <stop offset="100%" style="stop-color : rgb(100, 200, 100);stop-opacity : 1"/>
+        </linearGradient>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#epiGrad)" stroke="black" stroke-width="20"></rect>
+    <circle r="120" cx="0" cy="0" fill="red"></circle>
+    <text x="500" y="500" font-size="60" text-anchor="middle" fill="white">Press "new game"</text>
+
+</svg>
+
+<!--        Control buttons         -->
+
+<div class="hBox">
+        <div class = "imageButton" id="startStop" onclick="epiManager.running ? epiManager.pause() : epiManager.restart();"></div>
+        <div class = "textIO" style = "width : 80px">Time: <span id = "timeText">0</span></div>
+        <div class="imageButton" style="background-image:url('../art/zoomOut.png')" onclick="epiWorldView.zoom(1.5)"></div>
+        <div class="imageButton" style="background-image:url('../art/zoomIn.png')" onclick="epiWorldView.zoom(0.6666667)"></div>
+        <button id="allDataButton" onclick="epiManager.captureDataForAllCritters()">all data</button> &nbsp;&nbsp;&nbsp;
+        <button id="newGameButton" onclick="epiManager.newGameButtonPressed()">new game</button>
+</div>
+
+<!--    brief text report       -->
+
+<p id="healthReport"></p>
+
+<hr/>
+
+<!--        pink "options" section      -->
+
+<div class="hBox">
+    <div class = "vBox options" id = "gameOptions" onclick="epiOptions.optionChange()">
+        <label><input type="checkbox" id="dataOnCritterClick" checked> data on Critter click</label>
+        <label><input type="checkbox" id="dataOnArrival" > data on arrival </label>
+        <label><input type="checkbox" id="dataOnDeparture" > data on departure</label>
+        <label><input type="checkbox" id="dataOnGetSick">auto data on getting sick (Easier)</label>
+        <label><input type="checkbox" id="crittersMoveOnTheirOwn" checked>Critters move on their own (Harder)</label>
+        <label><input type="checkbox" id="showCarrier">Cheat: Show the carrier (Easier)</label>
+    </div>
+
+    <div class="vBox gameOptions" onclick="epiOptions.optionChange()">
+        <label id="smallGameDiv"><input type="checkbox" id="smallGame" checked>Small game (Easier)</label>
+        <label><input type="checkbox" id="endlessGame">Game does not end</label>
+        <hr>
+        <div id="maladyChoiceDiv">Disease:
+        <select id="maladyChoice">
+            <option value = "0">Thrisp</option>
+            <option value = "1">Dog Fever</option>
+            <option value = "2">Alban's Bloat</option>
+            <option value = "3">Arthemia</option>
+            <option value = "all">surprise me</option>
+        </select>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    epidemic.initialize();
+</script>
+
+</body>
+</html>
