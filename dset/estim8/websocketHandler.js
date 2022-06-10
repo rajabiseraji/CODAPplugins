@@ -13,7 +13,7 @@
         if(messageBody.sender && messageBody.sender === "unity") {
             console.log("here's the data from our Unity client")
             console.log(messageBody)
-            sendCodapReq();
+            sendCodapReq(messageBody);
         }
         const cursor = getOrCreateCursorFor(messageBody);
         cursor.style.transform = `translate(${messageBody.x}px, ${messageBody.y}px)`;
@@ -31,21 +31,21 @@
         });   
     }
 
-    function sendCodapReq() {
+    function sendCodapReq(messageBody) {
         const message = {
             "action": "create",
             "resource": "component",
             "values": {
               "type": "graph",
-              "name": "HeightAge",
+              "name": messageBody.text,
               "dimensions": {
                 "width": 240,
                 "height": 240
               },
               "position": "top",
               "dataContext": "cases",
-              "xAttributeName": "mpg",
-              "yAttributeName": "origin"
+              "xAttributeName": messageBody.xAxisName,
+              "yAttributeName": messageBody.yAxisName
             }
           }
         codapInterface.sendRequest(message, function (result) {
