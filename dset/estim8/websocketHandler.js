@@ -1,20 +1,8 @@
 
-(async function() {
+export const websockethandler = async function() {
 
-    var activeView = "";
-    var globalComponentList = [];
     const ws = await connectToServer();
     
-    var componentsList = document.getElementsByClassName("dg-component-view"); 
-    for (let component of componentsList) {
-      component.addEventListener("mouseover", () => {
-        activeView = {
-          id: component.id, 
-          boundingRect: component.getBoundingClientRect()
-        };
-      });
-    }
-
     document.body.onmousemove = (evt) => {
         const messageBody = { x: evt.clientX, y: evt.clientY };
         ws.send(JSON.stringify(messageBody));
@@ -25,7 +13,7 @@
         if(messageBody.sender && messageBody.sender === "unity") {
             console.log("here's the data from our Unity client")
             console.log(messageBody)
-            sendCodapGraphCreationReq(messageBody);
+            codapHelperModules.sendCodapGraphCreationReq(messageBody);
         }
         const cursor = getOrCreateCursorFor(messageBody);
         cursor.style.transform = `translate(${messageBody.x}px, ${messageBody.y}px)`;
@@ -41,61 +29,6 @@
                 }
             }, 10);
         });   
-    }
-
-    function sendCodapGraphCreationReq(messageBody) {
-        const message = {
-            "action": "create",
-            "resource": "component",
-            "values": {
-              "type": "graph",
-              "name": messageBody.text,
-              "dimensions": {
-                "width": 240,
-                "height": 240
-              },
-              "position": "top",
-              "dataContext": "auto-mpg",
-              "xAttributeName": messageBody.xAxisName,
-              "yAttributeName": messageBody.yAxisName
-            }
-          }
-        sendCodapReq(message, (result) => {
-          globalComponentList.push(findComponent(result.values.id));
-        });
-    }
-
-    function sendCodapReq(message, callbackOnSuccess) {
-      codapInterface.sendRequest(message, function (result) {
-        var isError = false;
-        var diff;
-        if (isSuccess(result)) {
-          console.log("success in the thing");
-          console.log(result);
-          if(result.values.id) {
-            console.log("here's the id " + result.values.id);
-
-            // do callback on success here
-            callbackOnSuccess(result);
-
-          } else {
-            console.log("i didn't find any ids");
-          }
-        } else {
-          isError = true;
-          console.log("error in the thing");
-        }
-      });
-    }
-
-    function isSuccess(obj) {
-        if (!obj) { return false;}
-        var rslt = true;
-        if (!Array.isArray(obj)) obj = [obj];
-        rslt = !obj.some(function (o) {
-          return (!(o.success))
-        });
-        return rslt;
     }
 
     function getOrCreateCursorFor(messageBody) {
@@ -115,13 +48,62 @@
 
         return cursor;
     }
+};
 
-    function findComponent(CODAPcomponentID) {
-      const msg = {
-        "action": "get",
-        "resource": `component[${CODAPcomponentID}]`
-      };
-      sendCodapReq(msg, () => console.log())
-    }
+export const codapHelperModules = {
+  
+  sendCodapGraphCreationReq: function(messageBody) {
+    const message = {
+        "action": "create",
+        "resource": "component",
+        "values": {
+          "type": "graph",
+          "name": messageBody.text,
+          "dimensions": {
+            "width": 240,
+            "height": 240
+          },
+          "position": "top",
+          "dataContext": "auto-mpg",
+          "xAttributeName": messageBody.xAxisName,
+          "yAttributeName": messageBody.yAxisName
+        }
+      }
+    this.sendCodapReq(message, (result) => {
+      globalComponentList.push(findComponent(result.values.id));
+    });
+  },
 
-})();
+  sendCodapReq: function(message, callbackOnSuccess) {
+    codapInterface.sendRequest(message, function (result) {
+      var isError = false;
+      var diff;
+      if (isSuccess(result)) {
+        console.log("success in the thing");
+        console.log(result);
+        if(result.values.id) {
+          console.log("here's the id " + result.values.id);
+
+          // do callback on success here
+          callbackOnSuccess(result);
+
+        } else {
+          console.log("i didn't find any ids");
+        }
+      } else {
+        isError = true;
+        console.log("error in the thing");
+      }
+    });
+  },
+
+  isSuccess: function(obj) {
+      if (!obj) { return false;}
+      var rslt = true;
+      if (!Array.isArray(obj)) obj = [obj];
+      rslt = !obj.some(function (o) {
+        return (!(o.success))
+      });
+      return rslt;
+  }
+}

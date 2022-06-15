@@ -49,17 +49,44 @@ http://codap.concord.org/~jsandoe/build/static/dg/en/cert/index.html?di=http://l
     <script src="/common/CodapInterface.js" language="JavaScript"></script>
 
     <script src="/common/pluginHelper.js" language="JavaScript"></script>
-    <script src="estim8.js" language="JavaScript"></script>
+    <!-- <script src="estim8.js" language="JavaScript"></script> -->
+    <script src="websocketHandler.js" type="module"></script>
+    <script src="codapNotificationHandler.js" type="module"></script>
+    
+    <script src="main.js" type="module"></script>
 
     <link rel="stylesheet" href="style.css">
-    <script src="websocketHandler.js" type="module"></script>
 
-    <script>
+    <script type="module">
         /**
          * Runs when everything is loaded.
          */
+        import codapNotificationHandler from "./codapNotificationHandler.js"
+
         $(function () {
-            startCodapConnection();
+            
+            var config = {
+                title: "Estimation",
+                version: "001",
+                dimensions: {width: 330, height: 240}
+            };
+
+            console.log("Starting codap connection");
+
+            codapInterface.init(config).then(
+                function () { //  interactive state is populated!
+                        console.log("yeay I made the connection here!");
+                        
+                        // Here we assign the 
+                        codapInterface.on('notify', 'component', 'create', codapNotificationHandler.componentCreateHandler);
+                        codapInterface.on('notify', 'component', 'delete', codapNotificationHandler.componentDeleteHandler);
+                        codapInterface.on('notify', 'component', 'move', codapNotificationHandler.componentChangeHandler);
+                        
+                        return Promise.resolve();
+                    }
+                ).catch(function (msg) {
+                    console.log('warn: ' + msg);
+                });
         });
     </script>
 

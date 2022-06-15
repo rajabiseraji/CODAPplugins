@@ -25,6 +25,7 @@
 
  */
 
+// const codapInterface = require("../../common/CodapInterface");
 
 function startCodapConnection() {
     var config = {
@@ -51,6 +52,8 @@ function startCodapConnection() {
  * @type {{initialize: estimate.initialize, newGame: estimate.newGame, endGame: estimate.endGame, newTurn: estimate.newTurn, endTurn: estim8.endTurn}}
  */
 var estim8 = {
+    // here's where we store the components with their position and id once they get created
+    componentList: [],
 
     initialize: function () {
 
@@ -65,6 +68,10 @@ var estim8 = {
         } else {        //  we're starting fresh, with a new data set.
             pluginHelper.initDataSet(estim8.dataSetDescription).then(
                 function () {
+                    console.log("im in init data set");
+                    codapInterface.on('notify', 'component', 'create', estim8.componentCreateHandler);
+                    codapInterface.on('notify', 'component', 'delete', estim8.componentDeleteHandler);
+                    codapInterface.on('notify', 'component', 'move', estim8.componentChangeHandler);
                     // estim8.makeAGraph("Asked for a graph, new Data Context");
                 }
             );
@@ -190,6 +197,26 @@ estim8.codapSelects = function (iMessage) {      //  |N| part of part 2 solution
 
     //      end remove
 
+};
+
+estim8.componentChangeHandler = function(imsg) {
+    console.log("i'm here for the component change: ");
+    console.log(imsg);
+};
+estim8.componentCreateHandler = function(imsg) {
+    console.log("A component just got create : ");
+    console.log(imsg);
+    
+    if(imsg.values.type !== "graph")
+        return;
+    
+    sayhi();
+    
+
+};
+estim8.componentDeleteHandler = function(imsg) {
+    console.log("a component just got deleted: ");
+    console.log(imsg);
 };
 
 /**
