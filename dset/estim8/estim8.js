@@ -61,11 +61,11 @@ var estim8 = {
                 this.stripView.movePointerTo(this.state.currentTruth);
                 this.stripView.setPointerVisibility(true);
             }
-            estim8.makeAGraph("Asked for a graph, restored data");
+            // estim8.makeAGraph("Asked for a graph, restored data");
         } else {        //  we're starting fresh, with a new data set.
             pluginHelper.initDataSet(estim8.dataSetDescription).then(
                 function () {
-                    estim8.makeAGraph("Asked for a graph, new Data Context");
+                    // estim8.makeAGraph("Asked for a graph, new Data Context");
                 }
             );
         }
