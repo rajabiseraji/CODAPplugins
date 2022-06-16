@@ -69,9 +69,7 @@ export const codapHelperModules = {
           "yAttributeName": messageBody.yAxisName
         }
       }
-    this.sendCodapReq(message, (result) => {
-      globalComponentList.push(findComponent(result.values.id));
-    });
+    this.sendCodapReq(message, () => console.log("do something in codapNotificationHandler"));
   },
 
   sendCodapReq: function(message, callbackOnSuccess) {
@@ -81,15 +79,15 @@ export const codapHelperModules = {
       if (isSuccess(result)) {
         console.log("success in the thing");
         console.log(result);
-        if(result.values.id) {
-          console.log("here's the id " + result.values.id);
+        // if(result.values.id) {
+        //   console.log("here's the id " + result.values.id);
 
           // do callback on success here
           callbackOnSuccess(result);
 
-        } else {
-          console.log("i didn't find any ids");
-        }
+        // } else {
+        //   console.log("i didn't find any ids");
+        // }
       } else {
         isError = true;
         console.log("error in the thing");
@@ -97,13 +95,14 @@ export const codapHelperModules = {
     });
   },
 
-  isSuccess: function(obj) {
-      if (!obj) { return false;}
-      var rslt = true;
-      if (!Array.isArray(obj)) obj = [obj];
-      rslt = !obj.some(function (o) {
-        return (!(o.success))
-      });
-      return rslt;
-  }
+}
+
+function isSuccess(obj) {
+    if (!obj) { return false;}
+    var rslt = true;
+    if (!Array.isArray(obj)) obj = [obj];
+    rslt = !obj.some(function (o) {
+      return (!(o.success))
+    });
+    return rslt;
 }
