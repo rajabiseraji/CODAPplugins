@@ -64,6 +64,17 @@ http://codap.concord.org/~jsandoe/build/static/dg/en/cert/index.html?di=http://l
         import {codapNotificationHandler} from "./codapNotificationHandler.js"
 
         $(function () {
+
+            // this function runs when everything is loaded
+            for (var element of document.getElementsByClassName("dg-component-view")) {
+                element.addEventListener("mouseover", () => {
+                    element.querySelector(".dg-plot-view").attributeStyleMap.set("background-color", "yellow");
+                });  
+                element.addEventListener("mouseout", () => {
+                    element.querySelector(".dg-plot-view").attributeStyleMap.set("background-color", "white");
+                });  
+            }            
+            
             
             var config = {
                 title: "Estimation",
