@@ -13,7 +13,22 @@ export const websockethandler = async function() {
         if(messageBody.sender && messageBody.sender === "unity") {
             console.log("here's the data from our Unity client")
             console.log(messageBody)
-            codapHelperModules.sendCodapGraphCreationReq(messageBody);
+
+            // first we want to see what is the type of operation that we need to do
+            switch (messageBody.typeOfMessage) {
+              case "CREATE":
+                // do stuff that have to do with creation
+                codapHelperModules.sendCodapGraphCreationReq(messageBody);
+                break;
+              
+              case "EXTRUDE":
+                //  do stuff to extrude a visualization from desktop to VR
+                break;
+
+              default:
+                break;
+            }
+
         }
         const cursor = getOrCreateCursorFor(messageBody);
         cursor.style.transform = `translate(${messageBody.x}px, ${messageBody.y}px)`;
