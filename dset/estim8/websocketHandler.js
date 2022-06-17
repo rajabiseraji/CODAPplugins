@@ -22,7 +22,11 @@ export const websockethandler = async function() {
                 break;
               
               case "EXTRUDE":
+                console.log("I was asked to extrude sth and here's the data");
+                console.log(messageBody);
                 //  do stuff to extrude a visualization from desktop to VR
+                // get the position of the desktop from the msg 
+                // use the position to get the relative component from the list
                 break;
 
               default:

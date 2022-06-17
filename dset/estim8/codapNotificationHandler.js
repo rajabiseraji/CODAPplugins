@@ -41,6 +41,12 @@ export const codapNotificationHandler = {
         console.log("here's the component list after the fact");
         console.log(componentList);
     },
+
+    // This function gets the websocket msg and is called from websocketHandler 
+    // it will find the component in the component list and returns it to the caller
+    findComponentFromList: function(websocketMsg) {
+        // componentList.find
+    },
     
 }
 
@@ -65,6 +71,7 @@ function addToComponentList(resultObjectFromCodap, CODAPcomponentID) {
         id: CODAPcomponentID, 
         values: resultObjectFromCodap.values
     };
+    component.values.position = findInScreenPosition(component.values.position);
     var exists = componentList.some((el) => el.id === CODAPcomponentID);
     if (!exists)
         componentList.push(component);
@@ -81,11 +88,27 @@ function removeComponentFromList(CODAPcomponentID) {
 
 function changeComponentListItem(resultObjectFromCodap, CODAPcomponentID) {
     var foundIndex = componentList.findIndex((el) => el.id === CODAPcomponentID);
-    if(foundIndex !== -1) 
+    if(foundIndex !== -1) {
         componentList[foundIndex].values = resultObjectFromCodap.values;
+        componentList[foundIndex].values.position = findInScreenPosition(componentList[foundIndex].values.position);
+    }
 
     console.log("here's the component list after the fact");
     console.log(componentList);
+}
+
+// receives an object in the form of {left: int, top: int} that are the positions in CODAP space 
+// and returns the position of the component in the real viewport
+function findInScreenPosition(CODAPcomponentPosition) {
+    // codap's position.top is the relative height from the parent object 
+    // which means that we should add the other heights to find the height of our element on desktop
+    const chromeNavbarHeight =  71; // window.outerHeight -  window.innerHeight;
+    const codapNavbarHeight = 95;
+    console.log("here's the codap component position before the fact " + CODAPcomponentPosition.top);
+    return {
+        x: CODAPcomponentPosition.left,
+        y: CODAPcomponentPosition.top + codapNavbarHeight + chromeNavbarHeight
+    }
 }
 
 
