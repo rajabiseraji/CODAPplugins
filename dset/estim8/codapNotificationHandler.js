@@ -45,7 +45,16 @@ export const codapNotificationHandler = {
     // This function gets the websocket msg and is called from websocketHandler 
     // it will find the component in the component list and returns it to the caller
     findComponentFromList: function(websocketMsg) {
-        // componentList.find
+        const targetPosition = {
+            x: websocketMsg.x, 
+            y: websocketMsg.y
+        }
+        return componentList.find((component) => {
+            // if the component was in the bounds that we have selected, return it to the sender
+            if(component.values.position.x <= targetPosition.x <= component.values.position.endX)
+                if(component.values.position.y <= targetPosition.y <= component.values.positoin.endY)
+                    return component;
+        });
     },
     
 }
@@ -71,7 +80,7 @@ function addToComponentList(resultObjectFromCodap, CODAPcomponentID) {
         id: CODAPcomponentID, 
         values: resultObjectFromCodap.values
     };
-    component.values.position = findInScreenPosition(component.values.position);
+    component.values.position = findInScreenPosition(component.values.position, component.values.dimensions);
     var exists = componentList.some((el) => el.id === CODAPcomponentID);
     if (!exists)
         componentList.push(component);
@@ -90,7 +99,7 @@ function changeComponentListItem(resultObjectFromCodap, CODAPcomponentID) {
     var foundIndex = componentList.findIndex((el) => el.id === CODAPcomponentID);
     if(foundIndex !== -1) {
         componentList[foundIndex].values = resultObjectFromCodap.values;
-        componentList[foundIndex].values.position = findInScreenPosition(componentList[foundIndex].values.position);
+        componentList[foundIndex].values.position = findInScreenPosition(componentList[foundIndex].values.position, component.values.dimensions);
     }
 
     console.log("here's the component list after the fact");
@@ -99,7 +108,7 @@ function changeComponentListItem(resultObjectFromCodap, CODAPcomponentID) {
 
 // receives an object in the form of {left: int, top: int} that are the positions in CODAP space 
 // and returns the position of the component in the real viewport
-function findInScreenPosition(CODAPcomponentPosition) {
+function findInScreenPosition(CODAPcomponentPosition, CODAPcomponentDimensions) {
     // codap's position.top is the relative height from the parent object 
     // which means that we should add the other heights to find the height of our element on desktop
     const chromeNavbarHeight =  71; // window.outerHeight -  window.innerHeight;
@@ -107,7 +116,9 @@ function findInScreenPosition(CODAPcomponentPosition) {
     console.log("here's the codap component position before the fact " + CODAPcomponentPosition.top);
     return {
         x: CODAPcomponentPosition.left,
-        y: CODAPcomponentPosition.top + codapNavbarHeight + chromeNavbarHeight
+        y: CODAPcomponentPosition.top + codapNavbarHeight + chromeNavbarHeight,
+        endX: CODAPcomponentPosition.left + CODAPcomponentDimensions.width,
+        endY: CODAPcomponentPosition.top + codapNavbarHeight + chromeNavbarHeight + CODAPcomponentDimensions.height
     }
 }
 
