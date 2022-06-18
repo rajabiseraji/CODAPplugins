@@ -51,8 +51,8 @@ export const codapNotificationHandler = {
         }
         return componentList.find((component) => {
             // if the component was in the bounds that we have selected, return it to the sender
-            if(component.values.position.x <= targetPosition.x <= component.values.position.endX)
-                if(component.values.position.y <= targetPosition.y <= component.values.positoin.endY)
+            if(component.values.position.x <= targetPosition.x && targetPosition.x <= component.values.position.endX)
+                if(component.values.position.y <= targetPosition.y && targetPosition.y <= component.values.position.endY)
                     return component;
         });
     },
@@ -99,7 +99,7 @@ function changeComponentListItem(resultObjectFromCodap, CODAPcomponentID) {
     var foundIndex = componentList.findIndex((el) => el.id === CODAPcomponentID);
     if(foundIndex !== -1) {
         componentList[foundIndex].values = resultObjectFromCodap.values;
-        componentList[foundIndex].values.position = findInScreenPosition(componentList[foundIndex].values.position, component.values.dimensions);
+        componentList[foundIndex].values.position = findInScreenPosition(componentList[foundIndex].values.position, componentList[foundIndex].values.dimensions);
     }
 
     console.log("here's the component list after the fact");
@@ -113,7 +113,7 @@ function findInScreenPosition(CODAPcomponentPosition, CODAPcomponentDimensions) 
     // which means that we should add the other heights to find the height of our element on desktop
     const chromeNavbarHeight =  71; // window.outerHeight -  window.innerHeight;
     const codapNavbarHeight = 95;
-    console.log("here's the codap component position before the fact " + CODAPcomponentPosition.top);
+    // console.log("here's the codap component position before the fact " + CODAPcomponentPosition.top);
     return {
         x: CODAPcomponentPosition.left,
         y: CODAPcomponentPosition.top + codapNavbarHeight + chromeNavbarHeight,

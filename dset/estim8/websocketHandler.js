@@ -1,4 +1,6 @@
 
+import { codapNotificationHandler } from "./codapNotificationHandler.js";
+
 export const websockethandler = async function() {
 
     const ws = await connectToServer();
@@ -22,8 +24,25 @@ export const websockethandler = async function() {
                 break;
               
               case "EXTRUDE":
-                console.log("I was asked to extrude sth and here's the data");
-                console.log(messageBody);
+                // console.log("I was asked to extrude sth and here's the data");
+                // console.log(messageBody);
+                console.log("Extruding ");
+                let foundComponent = codapNotificationHandler.findComponentFromList(messageBody);
+
+                if(foundComponent) {
+                  console.log(foundComponent);
+                  const newMsgBody = {
+                    x: foundComponent.values.position.x,
+                    y: foundComponent.values.position.y,
+                    typeOfMessage: "CODAPINFO",
+                    xAxisName: foundComponent.values.xAttributeName,
+                    yAxisName: foundComponent.values.yAttributeName
+                  }
+
+                  // send this msg to the server to be sent to Unity 
+                  ws.send(JSON.stringify(newMsgBody));
+
+                }
                 //  do stuff to extrude a visualization from desktop to VR
                 // get the position of the desktop from the msg 
                 // use the position to get the relative component from the list
