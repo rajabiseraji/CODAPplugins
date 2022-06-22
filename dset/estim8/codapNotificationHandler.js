@@ -9,7 +9,9 @@ export const codapNotificationHandler = {
         console.log(imsg);
 
         var id = imsg.values.id;
-        findComponent(id, changeComponentListItem);
+        findComponent(id).then(changeComponentListItem).catch((errMsg) => {
+            console.log(errMsg);
+        });
         
     },
     
@@ -23,7 +25,9 @@ export const codapNotificationHandler = {
         // as the next step, just find it using the codap interface
         
         var id = imsg.values.id;
-        findComponent(id, addToComponentList);
+        findComponent(id).then(addToComponentList).catch((errMsg) => {
+            console.log(errMsg);
+        });
         
     },
     
@@ -61,21 +65,25 @@ export const codapNotificationHandler = {
 
 
 
-async function findComponent(CODAPcomponentID, callbackfn) {
+function findComponent(CODAPcomponentID) {
     const msg = {
       "action": "get",
       "resource": `component[${CODAPcomponentID}]`
     };
     
-    await codapHelperModules.sendCodapReq(msg, (result) => {
-        if(result.values) {
-            // do something with the results here
-            callbackfn(result, CODAPcomponentID);
-        }
-    });
+    return new Promise((resolve, reject) => {
+        codapHelperModules.sendCodapReq(msg).then((result) => {
+            if(result.values) {
+                // do something with the results here
+                resolve({resultObjectFromCodap: result, CODAPcomponentID});
+            } else {
+                reject("result.values is empty");
+            }
+        });
+    }) 
 }
 
-function addToComponentList(resultObjectFromCodap, CODAPcomponentID) {
+function addToComponentList({resultObjectFromCodap, CODAPcomponentID}) {
     var component =  {
         id: CODAPcomponentID, 
         values: resultObjectFromCodap.values
@@ -95,7 +103,7 @@ function removeComponentFromList(CODAPcomponentID) {
         componentList.splice(foundIndex, 1);
 }
 
-function changeComponentListItem(resultObjectFromCodap, CODAPcomponentID) {
+function changeComponentListItem({resultObjectFromCodap, CODAPcomponentID}) {
     var foundIndex = componentList.findIndex((el) => el.id === CODAPcomponentID);
     if(foundIndex !== -1) {
         componentList[foundIndex].values = resultObjectFromCodap.values;

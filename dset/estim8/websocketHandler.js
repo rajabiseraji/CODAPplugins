@@ -107,30 +107,36 @@ export const codapHelperModules = {
           "yAttributeName": messageBody.yAxisName
         }
       }
-    this.sendCodapReq(message, () => console.log("do something in codapNotificationHandler"));
+    this.sendCodapReq(message).then(() => {
+      console.log("do something in codapNotificationHandler")
+    }).catch((isError) => {
+      console.log("I got an error from the promise");
+    });
   },
 
-  sendCodapReq: function(message, callbackOnSuccess) {
-    codapInterface.sendRequest(message, function (result) {
-      var isError = false;
-      var diff;
-      if (isSuccess(result)) {
-        console.log("success in the thing");
-        console.log(result);
-        // if(result.values.id) {
-        //   console.log("here's the id " + result.values.id);
-
-          // do callback on success here
-          callbackOnSuccess(result);
-
-        // } else {
-        //   console.log("i didn't find any ids");
-        // }
-      } else {
-        isError = true;
-        console.log("error in the thing");
-      }
-    });
+  sendCodapReq: function(message) {
+    return new Promise((resolve, reject) => {
+      codapInterface.sendRequest(message, function (result) {
+        var isError = false;
+        if (isSuccess(result)) {
+          console.log("success in the thing");
+          console.log(result);
+          // if(result.values.id) {
+          //   console.log("here's the id " + result.values.id);
+  
+            // do callback on success here
+            // callbackOnSuccess(result);
+            resolve(result);
+  
+          // } else {
+          //   console.log("i didn't find any ids");
+          // }
+        } else {
+          isError = true;
+          reject(isError);
+        }
+      });
+    })
   },
 
 }
