@@ -92,7 +92,21 @@ http://codap.concord.org/~jsandoe/build/static/dg/en/cert/index.html?di=http://l
                         codapInterface.on('notify', 'component', 'create', codapNotificationHandler.componentCreateHandler);
                         codapInterface.on('notify', 'component', 'delete', codapNotificationHandler.componentDeleteHandler);
                         codapInterface.on('notify', 'component', 'move', codapNotificationHandler.componentChangeHandler);
+                        codapInterface.on('notify', 'component', 'attributeChange', codapNotificationHandler.componentChangeHandler);
+                        //codapInterface.on('notify', 'dataContextChangeNotice[auto-mpg]', (imsg) => {console.log("here's the imsg");console.log(imsg); });
                         
+                        // here are the events to listen for on CODAP's side: 
+                        /*
+                        component: 
+                        type: DG.GraphView
+                        "attributeChange" ---> this is for when any of the visualization attributes change
+
+                        dataContextChangeNotice[auto-mpg]: 
+                        listeningn to this for selection and probably filtering stuff
+                        WE NEED TO DEBOUNCE THIS ONE UNTIL THE LAST ONE ARRIVES
+
+                        */
+
                         return Promise.resolve();
                     }
                 ).catch(function (msg) {
