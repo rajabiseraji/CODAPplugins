@@ -2,7 +2,10 @@
 import { codapNotificationHandler } from "./codapNotificationHandler.js";
 
 export const websockethandler = async function() {
-
+    // if you want the extrusion to delete the thing on the desktop side, just set this to true 
+    // if it's false, it will just clone the vis in XR instead of transferring it there
+    const extrudeToDelete = false;
+    
     const ws = await connectToServer();
     
     document.body.onmousemove = (evt) => {
@@ -28,6 +31,13 @@ export const websockethandler = async function() {
                 // console.log(messageBody);
                 console.log("Extruding ");
                 let foundComponent = codapNotificationHandler.findComponentFromList(messageBody);
+
+                if(extrudeToDelete) {
+                  // If you don't want the extrusion to delete something, then comment this 
+                  // If not, it will just delete the vis from desktop and recreates it in XR
+                  codapHelperModules.sendCodapGraphDeleteReq(foundComponent.id);
+                }
+
 
                 if(foundComponent) {
                   console.log(foundComponent);
@@ -113,6 +123,20 @@ export const codapHelperModules = {
       console.log("I got an error from the promise");
     });
   },
+
+  sendCodapGraphDeleteReq: function(CODAPcomponentID) {
+    const message = {
+        "action": "delete",
+        "resource": `component[${CODAPcomponentID}]`,
+      }
+    this.sendCodapReq(message).then(() => {
+      console.log("do something in codapNotificationHandler")
+    }).catch((isError) => {
+      console.log("I got an error from the promise");
+    });
+  },
+
+
 
   sendCodapReq: function(message) {
     return new Promise((resolve, reject) => {
