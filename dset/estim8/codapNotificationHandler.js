@@ -25,9 +25,14 @@ export const codapNotificationHandler = {
         // as the next step, just find it using the codap interface
         
         var id = imsg.values.id;
-        findComponent(id).then(addToComponentList).catch((errMsg) => {
-            console.log(errMsg);
-        });
+
+        // let's add a 300ms wait before looking for the component that just got created 
+        // so that we don't have bulshit data on codap's side
+        setTimeout(() => {
+            findComponent(id).then(addToComponentList).catch((errMsg) => {
+                console.log(errMsg);
+            });
+        }, 300);
         
     },
     
