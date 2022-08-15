@@ -93,6 +93,7 @@ http://codap.concord.org/~jsandoe/build/static/dg/en/cert/index.html?di=http://l
                         codapInterface.on('notify', 'component', 'delete', codapNotificationHandler.componentDeleteHandler);
                         codapInterface.on('notify', 'component', 'move', codapNotificationHandler.componentChangeHandler);
                         codapInterface.on('notify', 'component', 'attributeChange', codapNotificationHandler.componentChangeHandler);
+                        codapInterface.on('notify', 'component', 'resize', codapNotificationHandler.componentChangeHandler);
                         //codapInterface.on('notify', 'dataContextChangeNotice[auto-mpg]', (imsg) => {console.log("here's the imsg");console.log(imsg); });
                         
                         // here are the events to listen for on CODAP's side: 
