@@ -1,5 +1,6 @@
 
 import { codapNotificationHandler } from "./codapNotificationHandler.js";
+const DATA_CONTEXT_NAME = "engine";
 
 export const websockethandler = async function() {
     // if you want the extrusion to delete the thing on the desktop side, just set this to true 
@@ -112,7 +113,7 @@ export const codapHelperModules = {
             "height": 240
           },
           "position": "top",
-          "dataContext": "auto-mpg",
+          "dataContext": DATA_CONTEXT_NAME,
           "xAttributeName": messageBody.xAxisName,
           "yAttributeName": messageBody.yAxisName
         }
