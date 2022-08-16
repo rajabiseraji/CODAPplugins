@@ -21,25 +21,31 @@ export const websockethandler = async function() {
             console.log(messageBody)
 
             // first we want to see what is the type of operation that we need to do
-            switch (messageBody.typeOfMessage) {
-              case "CREATE":
-                // do stuff that have to do with creation
-                codapHelperModules.sendCodapGraphCreationReq(messageBody);
-                break;
-              
-              case "EXTRUDE":
-                //  do stuff to extrude a visualization from desktop to VR
-                // get the position of the desktop from the msg 
-                // use the position to get the relative component from the list
-
-                // console.log("I was asked to extrude sth and here's the data");
-                // console.log(messageBody);
-                handleExtrusion(messageBody);
-                break;
-
-              default:
-                break;
+            if(messageBody.typeOfMessage === "CREATE") {
+              codapHelperModules.sendCodapGraphCreationReq(messageBody);
+            } else if (messageBody.typeOfMessage === "EXTRUDE") {
+              handleExtrusion(messageBody);
             }
+
+            // switch (messageBody.typeOfMessage) {
+            //   case "CREATE":
+            //     // do stuff that have to do with creation
+            //     codapHelperModules.sendCodapGraphCreationReq(messageBody);
+            //     break;
+              
+            //   case "EXTRUDE":
+            //     //  do stuff to extrude a visualization from desktop to VR
+            //     // get the position of the desktop from the msg 
+            //     // use the position to get the relative component from the list
+
+            //     // console.log("I was asked to extrude sth and here's the data");
+            //     // console.log(messageBody);
+            //     handleExtrusion(messageBody);
+            //     break;
+
+            //   default:
+            //     break;
+            // }
 
         }
         const cursor = getOrCreateCursorFor(messageBody);
