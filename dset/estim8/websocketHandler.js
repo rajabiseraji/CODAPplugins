@@ -9,10 +9,10 @@ export const websockethandler = async function() {
     
     const ws = await connectToServer();
     
-    document.body.onmousemove = (evt) => {
-        const messageBody = { x: evt.clientX, y: evt.clientY };
-        ws.send(JSON.stringify(messageBody));
-    };
+    // document.body.onmousemove = (evt) => {
+    //     const messageBody = { x: evt.clientX, y: evt.clientY };
+    //     ws.send(JSON.stringify(messageBody));
+    // };
 
     ws.onmessage = (webSocketMessage) => {
         const messageBody = JSON.parse(webSocketMessage.data);
@@ -48,8 +48,8 @@ export const websockethandler = async function() {
             // }
 
         }
-        const cursor = getOrCreateCursorFor(messageBody);
-        cursor.style.transform = `translate(${messageBody.x}px, ${messageBody.y}px)`;
+        // const cursor = getOrCreateCursorFor(messageBody);
+        // cursor.style.transform = `translate(${messageBody.x}px, ${messageBody.y}px)`;
     };
 
     function handleExtrusion(messageBody) {
@@ -62,10 +62,10 @@ export const websockethandler = async function() {
         codapHelperModules.sendCodapGraphDeleteReq(foundComponent.id);
       }
 
-
+      let newMsgBody = "";
       if(foundComponent) {
         console.log(foundComponent);
-        const newMsgBody = {
+        newMsgBody = {
           sender: "codap",
           x: foundComponent.values.position.x,
           y: foundComponent.values.position.y,
@@ -73,17 +73,9 @@ export const websockethandler = async function() {
           xAxisName: foundComponent.values.xAttributeName,
           yAxisName: foundComponent.values.yAttributeName
         }
-
-        // send this msg to the server to be sent to Unity 
-        ws.send(JSON.stringify(newMsgBody));
-
-      }
-      
-      // send a msg to Unity that tells Unity there is 
-      // nothing in that coordinate
-      if (foundComponent === undefined) {
-        console.log("it's not defined!!");
-        const anotherMsgBody = {
+      } else if(foundComponent === undefined) {
+        console.log("Didnt find anything under this coords");
+        newMsgBody = {
           sender: "codap",
           x: -1,
           y: -1,
@@ -92,12 +84,10 @@ export const websockethandler = async function() {
           xAxisName: "",
           yAxisName: ""
         }
-        
-        ws.send(JSON.stringify(anotherMsgBody));
-        console.log("Didn't find anything under this coords");
-
       }
-      
+        
+      ws.send(JSON.stringify(newMsgBody));
+
     }
         
     async function connectToServer() {    
