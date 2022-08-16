@@ -28,35 +28,13 @@ export const websockethandler = async function() {
                 break;
               
               case "EXTRUDE":
-                // console.log("I was asked to extrude sth and here's the data");
-                // console.log(messageBody);
-                console.log("Extruding ");
-                let foundComponent = codapNotificationHandler.findComponentFromList(messageBody);
-
-                if(extrudeToDelete) {
-                  // If you don't want the extrusion to delete something, then comment this 
-                  // If not, it will just delete the vis from desktop and recreates it in XR
-                  codapHelperModules.sendCodapGraphDeleteReq(foundComponent.id);
-                }
-
-
-                if(foundComponent) {
-                  console.log(foundComponent);
-                  const newMsgBody = {
-                    x: foundComponent.values.position.x,
-                    y: foundComponent.values.position.y,
-                    typeOfMessage: "CODAPINFO",
-                    xAxisName: foundComponent.values.xAttributeName,
-                    yAxisName: foundComponent.values.yAttributeName
-                  }
-
-                  // send this msg to the server to be sent to Unity 
-                  ws.send(JSON.stringify(newMsgBody));
-
-                }
                 //  do stuff to extrude a visualization from desktop to VR
                 // get the position of the desktop from the msg 
                 // use the position to get the relative component from the list
+
+                // console.log("I was asked to extrude sth and here's the data");
+                // console.log(messageBody);
+                handleExtrusion(messageBody);
                 break;
 
               default:
@@ -67,6 +45,54 @@ export const websockethandler = async function() {
         const cursor = getOrCreateCursorFor(messageBody);
         cursor.style.transform = `translate(${messageBody.x}px, ${messageBody.y}px)`;
     };
+
+    function handleExtrusion(messageBody) {
+      console.log("Extruding " + JSON.stringify(messageBody));
+      let foundComponent = codapNotificationHandler.findComponentFromList(messageBody);
+
+      if(extrudeToDelete) {
+        // If you don't want the extrusion to delete something, then comment this 
+        // If not, it will just delete the vis from desktop and recreates it in XR
+        codapHelperModules.sendCodapGraphDeleteReq(foundComponent.id);
+      }
+
+
+      if(foundComponent) {
+        console.log(foundComponent);
+        const newMsgBody = {
+          sender: "codap",
+          x: foundComponent.values.position.x,
+          y: foundComponent.values.position.y,
+          typeOfMessage: "CODAPINFO",
+          xAxisName: foundComponent.values.xAttributeName,
+          yAxisName: foundComponent.values.yAttributeName
+        }
+
+        // send this msg to the server to be sent to Unity 
+        ws.send(JSON.stringify(newMsgBody));
+
+      }
+      
+      // send a msg to Unity that tells Unity there is 
+      // nothing in that coordinate
+      if (foundComponent === undefined) {
+        console.log("it's not defined!!");
+        const anotherMsgBody = {
+          sender: "codap",
+          x: -1,
+          y: -1,
+          typeOfMessage: "CODAPINFO",
+          text: "NOT_FOUND",
+          xAxisName: "",
+          yAxisName: ""
+        }
+        
+        ws.send(JSON.stringify(anotherMsgBody));
+        console.log("Didn't find anything under this coords");
+
+      }
+      
+    }
         
     async function connectToServer() {    
         const ws = new WebSocket('ws://localhost:7071/ws?name=codap');
