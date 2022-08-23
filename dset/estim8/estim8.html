@@ -87,15 +87,19 @@ http://codap.concord.org/~jsandoe/build/static/dg/en/cert/index.html?di=http://l
             codapInterface.init(config).then(
                 function () { //  interactive state is populated!
                         console.log("yeay I made the connection here!");
-                        
+                        // let's call first case id thing here
+                        codapNotificationHandler.findFirstCaseId();
+
                         // Here we assign the 
                         codapInterface.on('notify', 'component', 'create', codapNotificationHandler.componentCreateHandler);
                         codapInterface.on('notify', 'component', 'delete', codapNotificationHandler.componentDeleteHandler);
                         codapInterface.on('notify', 'component', 'move', codapNotificationHandler.componentChangeHandler);
                         codapInterface.on('notify', 'component', 'attributeChange', codapNotificationHandler.componentChangeHandler);
                         codapInterface.on('notify', 'component', 'resize', codapNotificationHandler.componentChangeHandler);
-                        //codapInterface.on('notify', 'dataContextChangeNotice[auto-mpg]', (imsg) => {console.log("here's the imsg");console.log(imsg); });
+                        codapInterface.on('notify', 'dataContextChangeNotice[engine]', 'selectCases' , codapNotificationHandler.graphSelectionHandler);
                         
+
+
                         // here are the events to listen for on CODAP's side: 
                         /*
                         component: 

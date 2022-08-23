@@ -1,8 +1,27 @@
 import { codapHelperModules } from "./websocketHandler.js";
 
 var componentList = [];
+var selectedCaseIndexes = new Set();
+var firstCaseId = -1;
+const DATA_CONTEXT_NAME = "engine";
 
 export const codapNotificationHandler = {
+
+    getSelectedCaseIndexes: function() {
+        return selectedCaseIndexes;
+    },
+    
+    findFirstCaseId: function() {
+        // console.log("im in finding first case id");
+
+        var index  = 0;
+        findCaseIdByIndex(index).then((foundId) => {
+            // console.log("found id is " + foundId);
+            firstCaseId = foundId;
+        }).catch((errMsg) => {
+            console.log(errMsg);
+        });
+    },
 
     componentChangeHandler: function(imsg) {
         console.log("i'm here for the component change: ");
@@ -51,6 +70,28 @@ export const codapNotificationHandler = {
         console.log(componentList);
     },
 
+    graphSelectionHandler: function(imsg) {
+        console.log("in graphselection");
+        console.log(imsg);
+
+        // 1- debounce the execution until the last one
+        // after the last one, get 
+        if(!imsg.values.result.extend)
+            selectedCaseIndexes.clear();
+        
+        if (imsg.values.result.cases){
+            // this means that we have something to do here!
+            var caseIds = imsg.values.result.cases.map(item => (item.id - firstCaseId));
+            caseIds.forEach(caseId => {
+                selectedCaseIndexes.add(caseId);
+            });
+        }
+
+        // now send it to unity using the websocket thingy
+        // console.log(selectedCaseIndexes);
+        // TODO: we need to figure out how to send this wo webscokethandler.js
+    },
+
     // This function gets the websocket msg and is called from websocketHandler 
     // it will find the component in the component list and returns it to the caller
     findComponentFromList: function(websocketMsg) {
@@ -68,7 +109,29 @@ export const codapNotificationHandler = {
     
 }
 
-
+function findCaseIdByIndex(CODAPCaseIndex) {
+    const msg = {
+        "action": "get",
+        "resource": `dataContext[${DATA_CONTEXT_NAME}].collection[cases].caseByIndex[${CODAPCaseIndex}]`,
+    }
+    
+    return new Promise((resolve, reject) => {
+        codapHelperModules.sendCodapReq(msg).then((result) => {
+            if(result.values) {
+                // do something with the results here
+                console.log("just got index back");
+                if(result.values && result.values.case && result.values.case.id) {
+                    console.log("case id is " + result.values.case.id);
+                    resolve(result.values.case.id);
+                } else {
+                    reject("no first case id found");
+                }
+            } else {
+                reject("result.values is empty");
+            }
+        });
+    }) 
+}
 
 function findComponent(CODAPcomponentID) {
     const msg = {
@@ -132,6 +195,22 @@ function findInScreenPosition(CODAPcomponentPosition, CODAPcomponentDimensions) 
         y: CODAPcomponentPosition.top + codapNavbarHeight + chromeNavbarHeight,
         endX: CODAPcomponentPosition.left + CODAPcomponentDimensions.width,
         endY: CODAPcomponentPosition.top + codapNavbarHeight + chromeNavbarHeight + CODAPcomponentDimensions.height
+    }
+}
+
+function addToSelectedCases(resultObject) {
+    
+}
+
+function debounce(func, delay) {
+    let timer;
+    return function () { //anonymous function
+      const context = this;
+      const args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        func.apply(context, args)
+      }, delay);
     }
 }
 

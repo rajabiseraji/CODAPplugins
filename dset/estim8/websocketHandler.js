@@ -6,7 +6,6 @@ export const websockethandler = async function() {
     // if you want the extrusion to delete the thing on the desktop side, just set this to true 
     // if it's false, it will just clone the vis in XR instead of transferring it there
     const extrudeToDelete = false;
-    
     const ws = await connectToServer();
     
     // document.body.onmousemove = (evt) => {
@@ -89,6 +88,22 @@ export const websockethandler = async function() {
       ws.send(JSON.stringify(newMsgBody));
 
     }
+
+    function sendBrushingMessage() {
+      console.log("sending brushing over to unity");
+      let selectedIndexes = codapNotificationHandler.getSelectedCaseIndexes();
+      console.log(selectedIndexes);
+
+      let newMsgBody = {
+        sender: "codap",
+        id: 1,
+        text: "brushing",
+        typeOfMessage: "BRUSHTOVR",
+        indexes: [...selectedIndexes]
+      }
+
+      ws.send(JSON.stringify(newMsgBody));
+    }
         
     async function connectToServer() {    
         const ws = new WebSocket('ws://localhost:7071/ws?name=codap');
@@ -158,8 +173,6 @@ export const codapHelperModules = {
       console.log("I got an error from the promise");
     });
   },
-
-
 
   sendCodapReq: function(message) {
     return new Promise((resolve, reject) => {
