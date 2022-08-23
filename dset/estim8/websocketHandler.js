@@ -13,6 +13,7 @@ export const websockethandler = async function() {
     //     ws.send(JSON.stringify(messageBody));
     // };
 
+
     ws.onmessage = (webSocketMessage) => {
         const messageBody = JSON.parse(webSocketMessage.data);
         if(messageBody.sender && messageBody.sender === "unity") {
@@ -89,7 +90,7 @@ export const websockethandler = async function() {
 
     }
 
-    function sendBrushingMessage() {
+    const sendBrushingMessage = debounce(function() {
       console.log("sending brushing over to unity");
       let selectedIndexes = codapNotificationHandler.getSelectedCaseIndexes();
       console.log(selectedIndexes);
@@ -103,8 +104,9 @@ export const websockethandler = async function() {
       }
 
       ws.send(JSON.stringify(newMsgBody));
-    }
-        
+    }, 250);
+     
+    // this function generates ws constant variable
     async function connectToServer() {    
         const ws = new WebSocket('ws://localhost:7071/ws?name=codap');
         return new Promise((resolve, reject) => {
@@ -134,7 +136,11 @@ export const websockethandler = async function() {
 
         return cursor;
     }
+
+
+    return {sendBrushingMessage};
 };
+
 
 export const codapHelperModules = {
   
@@ -210,3 +216,16 @@ function isSuccess(obj) {
     });
     return rslt;
 }
+
+function debounce(func, delay) {
+  let timer;
+  return function () { //anonymous function
+    const context = this;
+    const args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      func.apply(context, args)
+    }, delay);
+  }
+}
+

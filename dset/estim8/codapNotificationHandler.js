@@ -6,7 +6,7 @@ var firstCaseId = -1;
 const DATA_CONTEXT_NAME = "engine";
 
 export const codapNotificationHandler = {
-
+    
     getSelectedCaseIndexes: function() {
         return selectedCaseIndexes;
     },
@@ -70,7 +70,7 @@ export const codapNotificationHandler = {
         console.log(componentList);
     },
 
-    graphSelectionHandler: function(imsg) {
+    graphSelectionHandler: async function(imsg) {
         console.log("in graphselection");
         console.log(imsg);
 
@@ -90,6 +90,9 @@ export const codapNotificationHandler = {
         // now send it to unity using the websocket thingy
         // console.log(selectedCaseIndexes);
         // TODO: we need to figure out how to send this wo webscokethandler.js
+        // console.log(ws);
+        let wsClient = await import("./main.js");
+        wsClient.sendBrushingMessage();
     },
 
     // This function gets the websocket msg and is called from websocketHandler 
@@ -108,6 +111,7 @@ export const codapNotificationHandler = {
     },
     
 }
+
 
 function findCaseIdByIndex(CODAPCaseIndex) {
     const msg = {
@@ -198,20 +202,5 @@ function findInScreenPosition(CODAPcomponentPosition, CODAPcomponentDimensions) 
     }
 }
 
-function addToSelectedCases(resultObject) {
-    
-}
-
-function debounce(func, delay) {
-    let timer;
-    return function () { //anonymous function
-      const context = this;
-      const args = arguments;
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        func.apply(context, args)
-      }, delay);
-    }
-}
 
 
