@@ -4,11 +4,27 @@ var componentList = [];
 var selectedCaseIndexes = new Set();
 var firstCaseId = -1;
 const DATA_CONTEXT_NAME = "engine";
+var justReceivedAUnityMsg = false;
 
 export const codapNotificationHandler = {
     
     getSelectedCaseIndexes: function() {
         return selectedCaseIndexes;
+    },
+
+    getFirstCaseIndex: function () {
+        return firstCaseId;
+    },
+
+    setUnitySelectionMsgFlag: function() {
+        justReceivedAUnityMsg = true;
+        console.log("just set unity msg to true");
+        wait(200)
+            .then(() => {
+                console.log("I'm done with waiting! and unity msg is " + justReceivedAUnityMsg);
+                justReceivedAUnityMsg = false;
+            })
+            .catch(() => console.log("something went wrong with the wait"))
     },
     
     findFirstCaseId: function() {
@@ -71,6 +87,12 @@ export const codapNotificationHandler = {
     },
 
     graphSelectionHandler: async function(imsg) {
+        if(justReceivedAUnityMsg)
+        {
+            console.log("Unity has been just here! wait a bit!");
+            return;
+        }
+
         console.log("in graphselection");
         console.log(imsg);
 
@@ -201,6 +223,8 @@ function findInScreenPosition(CODAPcomponentPosition, CODAPcomponentDimensions) 
         endY: CODAPcomponentPosition.top + codapNavbarHeight + chromeNavbarHeight + CODAPcomponentDimensions.height
     }
 }
+
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 
 

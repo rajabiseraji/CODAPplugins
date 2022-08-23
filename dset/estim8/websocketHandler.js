@@ -25,6 +25,9 @@ export const websockethandler = async function() {
               codapHelperModules.sendCodapGraphCreationReq(messageBody);
             } else if (messageBody.typeOfMessage === "EXTRUDE") {
               handleExtrusion(messageBody);
+            } else if (messageBody.typeOfMessage === "BRUSHTODESKTOP") {
+              debounce(handleBrushFromVRToDesktop(messageBody), 200);
+              
             }
 
             // switch (messageBody.typeOfMessage) {
@@ -90,6 +93,22 @@ export const websockethandler = async function() {
 
     }
 
+    function handleBrushFromVRToDesktop(messageBody) { 
+      console.log("Brushing from VR " + JSON.stringify(messageBody));
+      
+      // first set a flag that codap doesn't call it's change function and send the brushing msg to unity again
+
+      // get the data
+      let indexes = messageBody.indexes;
+      console.log(indexes);
+      // change the indexes to a format that starts from FIRST_CASE_INDEX
+      var firstCaseIndex = codapNotificationHandler.getFirstCaseIndex();
+      indexes = indexes.map((item) => item + firstCaseIndex);
+
+      // call a function in codap to brush that index
+      codapHelperModules.sendCodapGraphSelectionReq(indexes);
+    }
+
     const sendBrushingMessage = debounce(function() {
       console.log("sending brushing over to unity");
       let selectedIndexes = codapNotificationHandler.getSelectedCaseIndexes();
@@ -104,7 +123,7 @@ export const websockethandler = async function() {
       }
 
       ws.send(JSON.stringify(newMsgBody));
-    }, 250);
+    }, 500);
      
     // this function generates ws constant variable
     async function connectToServer() {    
@@ -166,6 +185,22 @@ export const codapHelperModules = {
     }).catch((isError) => {
       console.log("I got an error from the promise");
     });
+  },
+
+  sendCodapGraphSelectionReq: function(CODAPCaseIndexArray) {
+    const message = {
+      "action": "create",
+      "resource": `dataContext[${DATA_CONTEXT_NAME}].selectionList`,
+      "values": CODAPCaseIndexArray
+    }
+
+    this.sendCodapReq(message).then(() => {
+      console.log("we sent selection from Unity to CODAP with success");
+      codapNotificationHandler.setUnitySelectionMsgFlag();
+    }).catch((isError) => {
+      console.log("Error in selection promise!");
+    });
+
   },
 
   sendCodapGraphDeleteReq: function(CODAPcomponentID) {
