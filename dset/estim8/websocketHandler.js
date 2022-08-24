@@ -12,7 +12,15 @@ export const websockethandler = async function() {
     //     const messageBody = { x: evt.clientX, y: evt.clientY };
     //     ws.send(JSON.stringify(messageBody));
     // };
+    const debouncedFunc = debounce((msg) => {
+      console.log("Hey I'm from VR");
+      handleBrushFromVRToDesktop(msg)
+    }, 200);
 
+    const throttledFunc = throttle((msg) => {
+      console.log("Hey I'm from VR");
+      handleBrushFromVRToDesktop(msg)
+    }, 400);
 
     ws.onmessage = (webSocketMessage) => {
         const messageBody = JSON.parse(webSocketMessage.data);
@@ -26,7 +34,10 @@ export const websockethandler = async function() {
             } else if (messageBody.typeOfMessage === "EXTRUDE") {
               handleExtrusion(messageBody);
             } else if (messageBody.typeOfMessage === "BRUSHTODESKTOP") {
-              debounce(handleBrushFromVRToDesktop(messageBody), 200);
+              
+              // choose whether you want it throttled or debounced
+              // debouncedFunc(messageBody);
+              throttledFunc(messageBody);
               
             }
 
@@ -94,7 +105,7 @@ export const websockethandler = async function() {
     }
 
     function handleBrushFromVRToDesktop(messageBody) { 
-      console.log("Brushing from VR " + JSON.stringify(messageBody));
+      console.log("Brushing from VR");
       
       // first set a flag that codap doesn't call it's change function and send the brushing msg to unity again
 
@@ -261,6 +272,28 @@ function debounce(func, delay) {
     timer = setTimeout(() => {
       func.apply(context, args)
     }, delay);
+  }
+}
+
+
+const throttle = (func, limitPeriod) => {
+  let lastFunc;
+  let lastRan;
+  return function() {
+    const context = this;
+    const args = arguments;
+    if (!lastRan) {
+      func.apply(context, args)
+      lastRan = Date.now();
+    } else {
+      clearTimeout(lastFunc);
+      lastFunc = setTimeout(function() {
+          if ((Date.now() - lastRan) >= limitPeriod) {
+            func.apply(context, args);
+            lastRan = Date.now();
+          }
+       }, limitPeriod - (Date.now() - lastRan));
+    }
   }
 }
 
