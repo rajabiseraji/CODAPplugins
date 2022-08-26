@@ -135,6 +135,23 @@ export const websockethandler = async function() {
 
       ws.send(JSON.stringify(newMsgBody));
     }, 500);
+
+
+    const sendCODAPComponentInfoMessage = function(updatedComponentList) {
+      console.log("sending component info message over to unity");
+
+      console.log(updatedComponentList);
+
+      let newMsgBody = {
+        sender: "codap",
+        id: 10,
+        text: "Component List Info",
+        typeOfMessage: "COMPONENTLISTUPDATE",
+        componentList: updatedComponentList 
+      }
+
+      ws.send(JSON.stringify(newMsgBody));
+    };
      
     // this function generates ws constant variable
     async function connectToServer() {    
@@ -168,7 +185,7 @@ export const websockethandler = async function() {
     }
 
 
-    return {sendBrushingMessage};
+    return {sendBrushingMessage, sendCODAPComponentInfoMessage};
 };
 
 

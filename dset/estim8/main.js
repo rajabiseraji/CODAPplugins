@@ -1,6 +1,6 @@
 import { websockethandler } from "./websocketHandler.js";
 // import codapNotificationHandler from "./codapNotificationHandler.js";
 
-const {sendBrushingMessage} = await websockethandler();
+const {sendBrushingMessage, sendCODAPComponentInfoMessage} = await websockethandler();
 
-export {sendBrushingMessage};
+export {sendBrushingMessage, sendCODAPComponentInfoMessage};
