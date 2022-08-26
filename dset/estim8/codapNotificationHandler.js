@@ -193,8 +193,9 @@ async function addToComponentList({resultObjectFromCodap, CODAPcomponentID}) {
     // After we added the component to the list, we should then send a websocket msg to Unity, telling Unity that
     // a component was created in that coords
 
+    var uncomplicatedComponentList = componentList.map(item => ({id: item.id, position: item.values.position}));
     let wsClient = await import("./main.js");
-    wsClient.sendCODAPComponentInfoMessage(componentList);
+    wsClient.sendCODAPComponentInfoMessage(uncomplicatedComponentList);
 }
 
 async function removeComponentFromList(CODAPcomponentID) {
@@ -203,8 +204,9 @@ async function removeComponentFromList(CODAPcomponentID) {
         componentList.splice(foundIndex, 1);
 
     // let Unity know of the changes
+    var uncomplicatedComponentList = componentList.map(item => ({id: item.id, position: item.values.position}));
     let wsClient = await import("./main.js");
-    wsClient.sendCODAPComponentInfoMessage(componentList);
+    wsClient.sendCODAPComponentInfoMessage(uncomplicatedComponentList);
 }
 
 async function changeComponentListItem({resultObjectFromCodap, CODAPcomponentID}) {
@@ -218,8 +220,9 @@ async function changeComponentListItem({resultObjectFromCodap, CODAPcomponentID}
     console.log(componentList);
 
     // let Unity know of the changes
+    var uncomplicatedComponentList = componentList.map(item => ({id: item.id, position: item.values.position}));
     let wsClient = await import("./main.js");
-    wsClient.sendCODAPComponentInfoMessage(componentList);
+    wsClient.sendCODAPComponentInfoMessage(uncomplicatedComponentList);
 }
 
 // receives an object in the form of {left: int, top: int} that are the positions in CODAP space 
