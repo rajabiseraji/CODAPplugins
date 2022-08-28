@@ -43,6 +43,9 @@ export const codapNotificationHandler = {
         console.log("i'm here for the component change: ");
         console.log(imsg);
 
+        if(imsg.values.type !== "DG.GraphView")
+        return;
+
         var id = imsg.values.id;
         findComponent(id).then(changeComponentListItem).catch((errMsg) => {
             console.log(errMsg);
@@ -193,7 +196,13 @@ async function addToComponentList({resultObjectFromCodap, CODAPcomponentID}) {
     // After we added the component to the list, we should then send a websocket msg to Unity, telling Unity that
     // a component was created in that coords
 
-    var uncomplicatedComponentList = componentList.map(item => ({id: item.id, position: item.values.position}));
+    var uncomplicatedComponentList = componentList.map(item => ({
+        id: item.id, 
+        position: item.values.position,
+        legendAttributeName: item.values.legendAttributeName,
+        xAttributeName: item.values.xAttributeName,
+        yAttributeName: item.values.yAttributeName
+    }));
     let wsClient = await import("./main.js");
     wsClient.sendCODAPComponentInfoMessage(uncomplicatedComponentList);
 }
@@ -204,7 +213,13 @@ async function removeComponentFromList(CODAPcomponentID) {
         componentList.splice(foundIndex, 1);
 
     // let Unity know of the changes
-    var uncomplicatedComponentList = componentList.map(item => ({id: item.id, position: item.values.position}));
+    var uncomplicatedComponentList = componentList.map(item => ({
+        id: item.id, 
+        position: item.values.position,
+        legendAttributeName: item.values.legendAttributeName,
+        xAttributeName: item.values.xAttributeName,
+        yAttributeName: item.values.yAttributeName
+    }));
     let wsClient = await import("./main.js");
     wsClient.sendCODAPComponentInfoMessage(uncomplicatedComponentList);
 }
@@ -214,13 +229,23 @@ async function changeComponentListItem({resultObjectFromCodap, CODAPcomponentID}
     if(foundIndex !== -1) {
         componentList[foundIndex].values = resultObjectFromCodap.values;
         componentList[foundIndex].values.position = findInScreenPosition(componentList[foundIndex].values.position, componentList[foundIndex].values.dimensions);
-    }
+    } 
+    // else {
+    //     // if a component has changed but it's not on the list
+    //     addToComponentList({resultObjectFromCodap, CODAPcomponentID});
+    // }
 
     console.log("here's the component list after the fact");
     console.log(componentList);
 
     // let Unity know of the changes
-    var uncomplicatedComponentList = componentList.map(item => ({id: item.id, position: item.values.position}));
+    var uncomplicatedComponentList = componentList.map(item => ({
+        id: item.id, 
+        position: item.values.position,
+        legendAttributeName: item.values.legendAttributeName,
+        xAttributeName: item.values.xAttributeName,
+        yAttributeName: item.values.yAttributeName
+    }));
     let wsClient = await import("./main.js");
     wsClient.sendCODAPComponentInfoMessage(uncomplicatedComponentList);
 }
