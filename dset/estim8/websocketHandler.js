@@ -136,6 +136,21 @@ export const websockethandler = async function() {
       ws.send(JSON.stringify(newMsgBody));
     }, 500);
 
+    const sendLoggingMessage = debounce(function() {
+      console.log("sending logging over to unity");
+
+
+
+      let newMsgBody = {
+        sender: "codap",
+        id: 1,
+        text: codapNotificationHandler.getToBeLoggedMsg(),
+        typeOfMessage: "CODAPLOGGING",
+      }
+
+      ws.send(JSON.stringify(newMsgBody));
+    }, 500);
+
 
     const sendCODAPComponentInfoMessage = function(updatedComponentList) {
       console.log("sending component info message over to unity");
@@ -185,7 +200,7 @@ export const websockethandler = async function() {
     }
 
 
-    return {sendBrushingMessage, sendCODAPComponentInfoMessage};
+    return {sendBrushingMessage, sendCODAPComponentInfoMessage, sendLoggingMessage};
 };
 
 

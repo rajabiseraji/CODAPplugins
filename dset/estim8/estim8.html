@@ -98,6 +98,14 @@ http://codap.concord.org/~jsandoe/build/static/dg/en/cert/index.html?di=http://l
                         codapInterface.on('notify', 'component', 'resize', codapNotificationHandler.componentChangeHandler);
                         codapInterface.on('notify', 'dataContextChangeNotice[engine]', 'selectCases' , codapNotificationHandler.graphSelectionHandler);
                         
+                        codapInterface.on('notify', 'component', codapNotificationHandler.loggingHandler);
+                        codapInterface.on('notify', 'interactiveFrame', codapNotificationHandler.loggingHandler);
+                        codapInterface.on('notify', 'dataContextChangeNotice[engine]', codapNotificationHandler.loggingHandler);
+                        // codapInterface.on('notify', 'undoChangeNotice', codapNotificationHandler.loggingHandler);
+                        codapInterface.on('notify', 'documentChangeNotice', codapNotificationHandler.loggingHandler);
+                        codapInterface.on('notify', 'dataContext[engine].collection', codapNotificationHandler.loggingHandler);
+                        codapInterface.on('notify', 'dataContext[engine].attribute', codapNotificationHandler.loggingHandler);
+                        codapInterface.on('notify', 'dragDrop[attribute]', codapNotificationHandler.loggingHandler);
 
 
                         // here are the events to listen for on CODAP's side: 

@@ -2,6 +2,7 @@ import { codapHelperModules } from "./websocketHandler.js";
 
 var componentList = [];
 var selectedCaseIndexes = new Set();
+var toBeLoggedMsg = "";
 var firstCaseId = -1;
 const DATA_CONTEXT_NAME = "engine";
 var justReceivedAUnityMsg = false;
@@ -10,6 +11,10 @@ export const codapNotificationHandler = {
     
     getSelectedCaseIndexes: function() {
         return selectedCaseIndexes;
+    },
+
+    getToBeLoggedMsg() {
+        return toBeLoggedMsg;
     },
 
     getFirstCaseIndex: function () {
@@ -118,6 +123,30 @@ export const codapNotificationHandler = {
         // console.log(ws);
         let wsClient = await import("./main.js");
         wsClient.sendBrushingMessage();
+    },
+
+    
+    loggingHandler: async function(imsg) {
+        // if(justReceivedAUnityMsg)
+        // {
+        //     console.log("Unity has been just here! wait a bit!");
+        //     return;
+        // }
+
+        console.log("in logging");
+        console.log(imsg);
+
+        toBeLoggedMsg = imsg;
+
+        // 1- debounce the execution until the last one
+        // after the last one, get 
+
+        // now send it to unity using the websocket thingy
+        // console.log(selectedCaseIndexes);
+        // TODO: we need to figure out how to send this wo webscokethandler.js
+        // console.log(ws);
+        let wsClient = await import("./main.js");
+        wsClient.sendLoggingMessage();
     },
 
     // This function gets the websocket msg and is called from websocketHandler 
