@@ -4,7 +4,7 @@ var componentList = [];
 var selectedCaseIndexes = new Set();
 var toBeLoggedMsg = "";
 var firstCaseId = -1;
-const DATA_CONTEXT_NAME = "engine";
+const DATA_CONTEXT_NAME = "Melbourne_housing";
 var justReceivedAUnityMsg = false;
 
 export const codapNotificationHandler = {
