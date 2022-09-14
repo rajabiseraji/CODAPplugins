@@ -96,15 +96,15 @@ http://codap.concord.org/~jsandoe/build/static/dg/en/cert/index.html?di=http://l
                         codapInterface.on('notify', 'component', 'move', codapNotificationHandler.componentChangeHandler);
                         codapInterface.on('notify', 'component', 'attributeChange', codapNotificationHandler.componentChangeHandler);
                         codapInterface.on('notify', 'component', 'resize', codapNotificationHandler.componentChangeHandler);
-                        codapInterface.on('notify', 'dataContextChangeNotice[Melbourne_housing]', 'selectCases' , codapNotificationHandler.graphSelectionHandler);
+                        codapInterface.on('notify', 'dataContextChangeNotice[vancouverHousing]', 'selectCases' , codapNotificationHandler.graphSelectionHandler);
                         
                         codapInterface.on('notify', 'component', codapNotificationHandler.loggingHandler);
                         codapInterface.on('notify', 'interactiveFrame', codapNotificationHandler.loggingHandler);
-                        codapInterface.on('notify', 'dataContextChangeNotice[Melbourne_housing]', codapNotificationHandler.loggingHandler);
+                        codapInterface.on('notify', 'dataContextChangeNotice[vancouverHousing]', codapNotificationHandler.loggingHandler);
                         // codapInterface.on('notify', 'undoChangeNotice', codapNotificationHandler.loggingHandler);
                         codapInterface.on('notify', 'documentChangeNotice', codapNotificationHandler.loggingHandler);
-                        codapInterface.on('notify', 'dataContext[Melbourne_housing].collection', codapNotificationHandler.loggingHandler);
-                        codapInterface.on('notify', 'dataContext[Melbourne_housing].attribute', codapNotificationHandler.loggingHandler);
+                        codapInterface.on('notify', 'dataContext[vancouverHousing].collection', codapNotificationHandler.loggingHandler);
+                        codapInterface.on('notify', 'dataContext[vancouverHousing].attribute', codapNotificationHandler.loggingHandler);
                         codapInterface.on('notify', 'dragDrop[attribute]', codapNotificationHandler.loggingHandler);
 
 
