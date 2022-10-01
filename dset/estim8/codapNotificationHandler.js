@@ -230,7 +230,11 @@ async function addToComponentList({resultObjectFromCodap, CODAPcomponentID}) {
         position: item.values.position,
         legendAttributeName: item.values.legendAttributeName,
         xAttributeName: item.values.xAttributeName,
-        yAttributeName: item.values.yAttributeName
+        yAttributeName: item.values.yAttributeName,
+        xLowerBound: item.values.xLowerBound ? item.values.xLowerBound : -1,
+        xUpperBound: item.values.xUpperBound ? item.values.xUpperBound : -1,
+        yLowerBound: item.values.yLowerBound ? item.values.yLowerBound : -1,
+        yUpperBound: item.values.yUpperBound ? item.values.yUpperBound : -1,
     }));
     let wsClient = await import("./main.js");
     wsClient.sendCODAPComponentInfoMessage(uncomplicatedComponentList);
